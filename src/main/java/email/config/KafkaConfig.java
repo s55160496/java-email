@@ -2,7 +2,6 @@ package email.config;
 
 import com.example.common.EmailRequest;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
-import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.springframework.beans.factory.annotation.Value;
@@ -23,24 +22,24 @@ public class KafkaConfig {
     private String server;
 
     @Bean
-    public Map<String,Object> consumerConfig(){
-        Map<String,Object> map = new HashMap<>();
-        map.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG,server);
+    public Map<String, Object> consumerConfig() {
+        Map<String, Object> map = new HashMap<>();
+        map.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, server);
         map.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringSerializer.class);
         map.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, JsonSerializer.class);
-        map.put(ConsumerConfig.GROUP_ID_CONFIG,"json");
+        map.put(ConsumerConfig.GROUP_ID_CONFIG, "json");
         return map;
     }
 
     @Bean
-    public ConsumerFactory<String, EmailRequest> consumerFactory(){
-       return new DefaultKafkaConsumerFactory<>(consumerConfig(),
-               new StringDeserializer(),
-               new JsonDeserializer<>(EmailRequest.class));
+    public ConsumerFactory<String, EmailRequest> consumerFactory() {
+        return new DefaultKafkaConsumerFactory<>(consumerConfig(),
+                new StringDeserializer(),
+                new JsonDeserializer<>(EmailRequest.class));
     }
 
     @Bean
-    public ConcurrentKafkaListenerContainerFactory<String,EmailRequest> kafkaListenerContainerFactory(){
+    public ConcurrentKafkaListenerContainerFactory<String, EmailRequest> kafkaListenerContainerFactory() {
         ConcurrentKafkaListenerContainerFactory<String, EmailRequest> factory = new ConcurrentKafkaListenerContainerFactory<>();
         factory.setConsumerFactory(consumerFactory());
         return factory;
